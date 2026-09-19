@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "AI SAT Tutor",
+    "slug": "ai-sat-tutor",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "backgroundColor": "#4f46e5"
+    },
+    "ios": {
+      "bundleIdentifier": "com.sarvin02.aisattutor",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.sarvin02.aisattutor"
+    }
+  }
+}
