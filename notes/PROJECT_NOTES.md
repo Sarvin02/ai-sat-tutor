@@ -255,6 +255,15 @@ trained on the DGX Spark.
 3. Restart the web app. The study page (and any future practice/review
    features) will use the custom model.
 
+**Full planning stages & task list:** see
+[`notes/PROJECT_TIMELINE.md`](./PROJECT_TIMELINE.md) — a complete,
+ready-to-use timeline of every phase (0–5) and task for building the custom
+model (data → train → eval → serve → integrate → launch), organized so each
+phase can become a GitHub Project milestone and each task a card. A
+CSV version for import is at [`notes/PROJECT_TIMELINE.csv`](./PROJECT_TIMELINE.csv).
+The source of truth is the model project at `AI/sat-tutor-model/`
+(`PLAN.md`, `README.md`, `data_gen/`, `training/`, `eval/`, `serving/`).
+
 **Security conventions:**
 - Keep provider keys in environment variables (`.env.local`, git-ignored) and
   only read them on the server.
