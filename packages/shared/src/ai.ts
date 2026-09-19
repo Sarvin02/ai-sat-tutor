@@ -41,8 +41,9 @@ export function computeSkillScores(
     const correct = records.filter((r) => r.correct).length;
     const total = records.length;
     const score = Math.round((correct / total) * 100);
-    const last = records.reduce((max, r) =>
-      r.answeredAt > max ? r.answeredAt : max
+    const last = records.reduce<string>(
+      (max, r) => (r.answeredAt > max ? r.answeredAt : max),
+      records[0]?.answeredAt ?? ""
     );
     scores.push({
       skill: key,

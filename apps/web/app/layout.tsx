@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Sidebar } from "@/components/sidebar";
+import { MobileNav } from "@/components/mobile-nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,27 +13,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-neutral-50 text-neutral-900">
-        <header className="border-b border-neutral-200 bg-white">
-          <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">🎓</span>
-              <span className="text-lg font-semibold tracking-tight">
-                AI SAT Tutor
-              </span>
-            </div>
-            <nav className="flex gap-6 text-sm font-medium text-neutral-600">
-              <a href="/" className="hover:text-brand-600">
-                Home
-              </a>
-              <a href="/practice" className="hover:text-brand-600">
-                Practice
-              </a>
-            </nav>
+    <html lang="en" className="dark">
+      <body className="min-h-screen bg-[var(--background)] text-ink">
+        <div className="flex min-h-screen">
+          <Sidebar />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <MobileNav />
+            <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6 sm:px-6 sm:py-8">
+              {children}
+            </main>
           </div>
-        </header>
-        <main className="mx-auto max-w-3xl px-6 py-10">{children}</main>
+        </div>
       </body>
     </html>
   );

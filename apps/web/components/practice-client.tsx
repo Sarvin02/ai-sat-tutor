@@ -38,7 +38,7 @@ export function PracticeClient({ questions }: { questions: Question[] }) {
   }
 
   function handleReveal() {
-    if (!selected) return;
+    if (!selected || !question) return;
     setRevealed(true);
     setAnswers((prev) => [
       ...prev,
@@ -63,93 +63,127 @@ export function PracticeClient({ questions }: { questions: Question[] }) {
   }
 
   if (!question) {
-    return <p className="text-neutral-500">No questions available.</p>;
+    return <p className="text-ink-muted">No questions available.</p>;
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between text-sm text-neutral-500">
-        <span>
-          Question {index + 1} of {questions.length}
-        </span>
-        <span>
-          Accuracy: {stats.accuracy}% ({stats.correctCount}/{stats.totalQuestions})
-        </span>
-      </div>
+  const progress = Math.round(((index + 1) / questions.length) * 100);
 
-      <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
-        <div className="mb-4 flex items-center gap-2">
-          <span className="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
-            {question.section === "math" ? "Math" : "Reading & Writing"}
+  return (
+    <div className="space-y-5">
+      {/* Progress header */}
+      <div className="card">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-medium">
+            Question {index + 1}
+            <span className="text-ink-faint"> / {questions.length}</span>
           </span>
-          <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium capitalize text-neutral-600">
-            {question.difficulty}
+          <span className="text-ink-muted">
+            Accuracy {stats.accuracy}%
           </span>
         </div>
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-surface-2">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-brand-500 to-brand-400 transition-all"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
 
-        {question.passage && (
-          <p className="mb-4 border-l-2 border-neutral-300 pl-4 text-sm italic text-neutral-600">
+      {/* Question card */}
+      <div className="card">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span className="chip bg-brand-600/20 text-brand-300">
+            {question.section === "math" ? "Math" : "Reading & Writing"}
+          </span>
+          <span className="chip bg-surface-2 capitalize text-ink-muted">
+            {question.difficulty}
+          </span>
+          {question.aiGenerated ? (
+            <span className="chip bg-surface-2 text-ink-faint">AI</span>
+          ) : null}
+        </div>
+
+        {question.passage ? (
+          <p className="mb-4 border-l-2 border-brand-500/40 pl-4 text-sm italic text-ink-muted">
             {question.passage}
           </p>
-        )}
+        ) : null}
 
-        <p className="whitespace-pre-line text-lg text-neutral-900">
+        <p className="whitespace-pre-line text-lg leading-relaxed">
           {question.prompt}
         </p>
 
         <div className="mt-6 space-y-3">
           {question.options.map((opt) => {
-            const isCorrect = revealed && opt.id === question.correctOptionId;
-            const isWrong =
-              revealed && opt.id === selected && !isCorrect;
+            const isCorrect =
+              revealed && opt.id === question.correctOptionId;
+            const isWrong = revealed && opt.id === selected && !isCorrect;
             return (
               <button
                 key={opt.id}
                 onClick={() => handleSelect(opt.id)}
                 disabled={revealed}
                 className={[
-                  "flex w-full items-start gap-3 rounded-lg border px-4 py-3 text-left transition",
+                  "flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left transition",
                   isCorrect
-                    ? "border-green-500 bg-green-50"
+                    ? "border-emerald-500/60 bg-emerald-500/10"
                     : isWrong
-                      ? "border-red-500 bg-red-50"
+                      ? "border-red-500/60 bg-red-500/10"
                       : selected === opt.id
-                        ? "border-brand-500 bg-brand-50"
-                        : "border-neutral-200 hover:border-neutral-300 hover:bg-neutral-50",
+                        ? "border-brand-500 bg-brand-600/10"
+                        : "border-line hover:border-[#3a3a4a] hover:bg-surface-2",
                 ].join(" ")}
               >
-                <span className="font-semibold text-neutral-500">
-                  {opt.id}.
+                <span
+                  className={[
+                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-xs font-bold",
+                    isCorrect
+                      ? "bg-emerald-500 text-white"
+                      : isWrong
+                        ? "bg-red-500 text-white"
+                        : selected === opt.id
+                          ? "bg-brand-600 text-white"
+                          : "bg-surface-2 text-ink-muted",
+                  ].join(" ")}
+                >
+                  {opt.id}
                 </span>
-                <span>{opt.text}</span>
+                <span className="pt-0.5">{opt.text}</span>
               </button>
             );
           })}
         </div>
 
-        {revealed && (
-          <div className="mt-6 rounded-lg bg-neutral-50 p-4 text-sm text-neutral-700">
-            <p className="font-semibold text-neutral-900">Explanation</p>
-            <p className="mt-1">{question.explanation}</p>
+        {revealed ? (
+          <div className="mt-6 rounded-xl border border-line bg-surface-2/60 p-4 text-sm">
+            <p className="font-semibold text-brand-300">Explanation</p>
+            <p className="mt-1 leading-relaxed text-ink-muted">
+              {question.explanation}
+            </p>
           </div>
-        )}
+        ) : null}
       </div>
 
-      <div className="flex justify-end gap-3">
+      {/* Actions */}
+      <div className="flex items-center justify-between gap-3">
+        <button
+          onClick={handleNext}
+          className="btn-ghost"
+          aria-label="Restart"
+        >
+          Restart
+        </button>
         {!revealed ? (
           <button
             onClick={handleReveal}
             disabled={!selected}
-            className="rounded-lg bg-brand-600 px-5 py-2.5 font-medium text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-40"
+            className="btn-primary px-6"
           >
             Check answer
           </button>
         ) : (
-          <button
-            onClick={handleNext}
-            className="rounded-lg bg-neutral-900 px-5 py-2.5 font-medium text-white transition hover:bg-neutral-700"
-          >
-            {isLast ? "Restart" : "Next question"}
+          <button onClick={handleNext} className="btn-primary px-6">
+            {isLast ? "Finish" : "Next question"}
           </button>
         )}
       </div>

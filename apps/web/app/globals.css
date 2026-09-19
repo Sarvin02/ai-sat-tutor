@@ -3,12 +3,66 @@
 @tailwind utilities;
 
 :root {
-  --foreground: #171717;
-  --background: #ffffff;
+  --background: #0a0a0f;
+  --surface: #12121a;
+  --surface-2: #1a1a24;
+  --border: #262633;
+  --foreground: #f4f4f7;
+  --muted: #9a9aa8;
+  --brand: #7c6cff;
+  --brand-2: #a78bfa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
+  margin: 0;
   color: var(--foreground);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+}
+
+/* Subtle custom scrollbar for the dark theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a38;
+  border-radius: 999px;
+  border: 2px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a4a;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-5;
+  }
+  .card-hover {
+    @apply transition hover:border-[#33334a] hover:bg-[var(--surface-2)];
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#6a5bff] disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-[var(--border)] bg-transparent px-4 py-2.5 text-sm font-medium text-[var(--foreground)] transition hover:bg-[var(--surface-2)];
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
 }
